@@ -2,26 +2,65 @@ package com.lambdaschool.starthere.services;
 
 import com.lambdaschool.starthere.models.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface UserService
-{
-    UserDetails loadUserByUsername(String username);
+@Service
+public interface UserService {
 
-    List<User> findAll();
+    List<User> findAllByOrderByFullNameAsc();
 
-    User findUserById(long id);
+    Optional<User> findById(Long id);
 
-    User findByName(String name);
+    User findByEmail(String email);
 
-    void delete(long id);
+    String registerUser(User userToRegister);
 
-    User save(User user);
+    String userActivation(String code);
 
-    User update(User user, long id, boolean isAdmin);
+    void switchSelectedStatus(User loggedInUser, String SelectedStatus);
 
-    void deleteUserRole(long userid, long roleid);
+    ArrayList<String> rolesToList(Set<Role> roles);
 
-    void addUserRole(long userid, long roleid);
+    void switchSelectedCategory(User loggedInUser, String selectedCategory);
+
+    Set<Role> findUserRolesInnerJoin(Long loggedInUserId);
+
+    Set<Role> findUserPossibleRoles(Long loggedInUserId);
+
+    List<Category> findUserCategoriesInnerJoin(Long loggedInUserId);
+
+    List<Category> findUserPossibleCategories(Long loggedInUserId);
+
+    //Admin options
+    List<User> userSearch(String fullName, String email, String address, String phoneNumber);
+
+    List<User> userSearch(String fullName, String email, String address, String phoneNumber, String selectedCategory);
+
+    List<User> findByCategoryId(Long selectedCategoryId);
+
+    List<User> findCategoryPossibleUsers(Long selectedCategoryId);
+
+    String editUser(User loggedInUser,String newName,String newEmail,String newAddress,String newPhoneNumber);
+
+    String changePassword(User user, String oldPassword, String newPassword, String confirmPassword);
+
+    String changePassword(User user, String newPassword, String confirmPassword);
+
+    void addCategoryToUserCategories(User selectedUser, String categoryToAdd);
+
+    void removeCategoryFromUserCategories(User selectedUser, String categoryToRemove);
+
+    void addRoleToUserRoles(User selectedUser, String roleToAdd);
+
+    void removeRoleFromUserRoles(User selectedUser, String roleToRemove);
+
+    void disableUser(User selectedUser, String disableUser);
+
+    boolean userIsAdmin(User selectedUser);
+
+    void changeAdminRole(User selectedUser, String adminRole);
+
 }
