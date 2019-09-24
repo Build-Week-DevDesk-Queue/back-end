@@ -7,59 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "roles")
-public class Role extends Auditable
-{
+@Table(name="role")
+public class Role {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long roleid;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name="role_id")
+    private int id;
 
-    @Column(nullable = false,
-            unique = true)
-    private String name;
+    @Column(name="role")
+    private String role;
 
-    @OneToMany(mappedBy = "role",
-               cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("role")
-    private List<UserRoles> userroles = new ArrayList<>();
 
-    public Role()
-    {
+
+    public int getId() {
+        return id;
     }
 
-    public Role(String name)
-    {
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public long getRoleid()
-    {
-        return roleid;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleid(long roleid)
-    {
-        this.roleid = roleid;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public List<UserRoles> getUserroles()
-    {
-        return userroles;
-    }
-
-    public void setUserroles(List<UserRoles> userroles)
-    {
-        this.userroles = userroles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
 }

@@ -8,125 +8,104 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 // User is considered the parent entity
 
 @Entity
-@Table(name = "users")
-public class User extends Auditable
-{
+@Table(name = "user")
+public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long userid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    @Column(nullable = false,
-            unique = true)
-    private String username;
+    @Column(name = "email")
+    private String email;
 
-    @Column(nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(name = "firstname")
+    private String firstName;
+
+    @Column(name = "lastname")
+    private String lastName;
+
+    @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user",
-               cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("user")
-    private List<UserRoles> userroles = new ArrayList<>();
+    @Column(name = "active")
+    private int active;
 
-    @OneToMany(mappedBy = "user",
-               cascade = CascadeType.ALL,
-               orphanRemoval = true)
-    @JsonIgnoreProperties("user")
-    private List<Useremail> useremails = new ArrayList<>();
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="user_role", joinColumns=@JoinColumn(name="user_id"), inverseJoinColumns=@JoinColumn(name="role_id"))
+    private Set<Role> roles;
 
-    public User()
-    {
+    @Column(name = "username")
+    private String username;
+
+    public User() {
     }
 
-    public User(String username, String password, List<UserRoles> userRoles)
-    {
-        setUsername(username);
-        setPassword(password);
-        for (UserRoles ur : userRoles)
-        {
-            ur.setUser(this);
-        }
-        this.userroles = userRoles;
+    public int getId() {
+        return id;
     }
 
-    public long getUserid()
-    {
-        return userid;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setUserid(long userid)
-    {
-        this.userid = userid;
+    public String getEmail() {
+        return email;
     }
 
-    public String getUsername()
-    {
-        return username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setUsername(String username)
-    {
-        this.username = username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getPassword()
-    {
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        this.password = passwordEncoder.encode(password);
-    }
-
-    public void setPasswordNoEncrypt(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public List<UserRoles> getUserroles()
-    {
-        return userroles;
+    public int getActive() {
+        return active;
     }
 
-    public void setUserroles(List<UserRoles> userroles)
-    {
-        this.userroles = userroles;
+    public void setActive(int active) {
+        this.active = active;
     }
 
-    public List<Useremail> getUseremails()
-    {
-        return useremails;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setUseremails(List<Useremail> useremails)
-    {
-        this.useremails = useremails;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
-    public List<SimpleGrantedAuthority> getAuthority()
-    {
-        List<SimpleGrantedAuthority> rtnList = new ArrayList<>();
-
-        for (UserRoles r : this.userroles)
-        {
-            String myRole = "ROLE_" + r.getRole()
-                                       .getName()
-                                       .toUpperCase();
-            rtnList.add(new SimpleGrantedAuthority(myRole));
-        }
-
-        return rtnList;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @Override
-    public String toString()
-    {
-        return "User{" + "userid=" + userid + ", username='" + username + '\'' + ", password='" + password + '\'' + ", userRoles=" + userroles + ", useremails=" + useremails + '}';
+    public String getUsername() {
+        return username;
     }
 }
